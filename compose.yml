@@ -1,0 +1,30 @@
+services:
+    web:
+        build: .
+        image: oit:latest
+        restart: unless-stopped
+        expose:
+            - "80"
+        networks:
+            - oit
+        healthcheck:
+            test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+    cloudflared:
+        image: cloudflare/cloudflared:latest
+        restart: unless-stopped
+        command: tunnel --no-autoupdate run
+        environment:
+            - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+        networks:
+            - oit
+        depends_on:
+            web:
+                condition: service_healthy
+
+networks:
+    oit:
+        driver: bridge
