@@ -27,6 +27,7 @@ export function classifyNote(note: string): AbsenceKind {
     if (
         /miss(ed)?\d*/.test(n) ||
         /\bsick\b/.test(n) ||
+        /\babsent\b/.test(n) ||
         /(^|[^\d.])-1\b/.test(n)
     ) {
         return "missed";
